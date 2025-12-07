@@ -1,31 +1,41 @@
-var block = document.getElementById("block");
-var hole = document.getElementById("hole");
-var character = document.getElementById("character");
-var jumping = 0;
-var counter = 0;
+let block = document.getElementById("block");
+let hole = document.getElementById("hole");
+let character = document.getElementById("character");
+let jumping = 0;
+let counter = 0;
+let gameOver = false; 
 
-hole.addEventListener('animationiteration', () => {
-    var random = -((Math.random() * 300) + 150);
-    hole.style.top = random + "px";
+hole.addEventListener('animationiteration', () => {	
+	let random = -((Math.random() * 300) + 150);
+	hole.style.top = random + "px";
     counter++;
 });
 
 setInterval(function() {
-    var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
-    
+    if (gameOver) return; 
+
+    let characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+
     if (jumping === 0) {
         character.style.top = (characterTop + 3) + "px";
     }
 
-    var blockLeft = parseInt(window.getComputedStyle(block).getPropertyValue("left"));
-    var holeTop = parseInt(window.getComputedStyle(hole).getPropertyValue("top"));
-    var cTop = -(500 - characterTop);
+    let blockLeft = parseInt(window.getComputedStyle(block).getPropertyValue("left"));
+    let holeTop = parseInt(window.getComputedStyle(hole).getPropertyValue("top"));
+    let cTop = -(500 - characterTop);
 
     if ((characterTop > 480) || 
         ((blockLeft < 20) && (blockLeft > -50) && ((cTop < holeTop) || (cTop > holeTop + 130)))) {
+        
+        gameOver = true;
         alert("Game over. Score: " + (counter - 1));
+        
         character.style.top = "100px";
         counter = 0;
+
+        setTimeout(() => {
+            gameOver = false;
+        }, 500); 
     }
 }, 10);
 
@@ -33,8 +43,8 @@ function jump() {
     jumping = 1;
     let jumpCount = 0;
 
-    var jumpInterval = setInterval(function() {
-        var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+    let jumpInterval = setInterval(function() {
+        let characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
 
         if (characterTop > 6 && jumpCount < 15) {
             character.style.top = (characterTop - 5) + "px";
